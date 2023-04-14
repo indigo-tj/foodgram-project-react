@@ -1,14 +1,15 @@
 import unicodedata
 
-from core import texsts
-from core.enums import Limits
-from core.validators import MinLenValidator, OneOfTwoValidator
 from django.contrib.auth.models import AbstractUser
 from django.db.models import (CASCADE, BooleanField, CharField,
                               CheckConstraint, DateTimeField, EmailField, F,
                               ForeignKey, Model, Q, UniqueConstraint)
 from django.db.models.functions import Length
 from django.utils.translation import gettext_lazy as _
+
+from core import texsts
+from core.enums import Limits
+from core.validators import MinLenValidator, OneOfTwoValidator
 
 CharField.register_lookup(Length)
 
