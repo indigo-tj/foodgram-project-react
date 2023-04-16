@@ -1,6 +1,6 @@
 import os
 
-from decouple import Csv, config
+from datetime import timedelta
 
 DATE_TIME_FORMAT = '%d/%m/%Y %H:%M'
 
@@ -8,15 +8,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = 'django-insecure-pnhb###)q!r2*fbo)$w8mh)t_@a+ay_(i_li=^-y$k2@nym4!8'
 
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = True
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*', cast=Csv())
-
-# CSRF_TRUSTED_ORIGINS = config(
-#     'CSRF_TRUSTED_ORIGINS',
-#     default='http://localhost, http://127.0.0.1',
-#     cast=Csv()
-# )
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -46,10 +40,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'foodgram.urls'
 
+TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [TEMPLATES_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -70,8 +66,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
-AUTH_USER_MODEL = 'users.MyUser'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -124,6 +118,7 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+# STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'),)
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
@@ -133,18 +128,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 PASSWORD_RESET_TIMEOUT = 60 * 60  # 1 hour
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'loggers': {
-        'django.db.backends': {
-            'level': 'DEBUG' if DEBUG else 'ERROR',
-            'handlers': ['console', ],
-        },
-    },
-}
+AUTH_USER_MODEL = 'users.User'
