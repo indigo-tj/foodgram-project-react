@@ -1,9 +1,8 @@
 from django.contrib import admin
 
-from . import models
+from .models import User, Subscribe
 
 
-@admin.register(models.User)
 class UserAdmin(admin.ModelAdmin):
     list_display = (
         'pk', 'username', 'email', 'first_name', 'last_name',
@@ -13,8 +12,11 @@ class UserAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
 
-@admin.register(models.Subscribe)
 class SubscriberAdmin(admin.ModelAdmin):
     list_display = ('pk', 'user', 'author',)
     list_editable = ('user', 'author')
     empty_value_display = '-пусто-'
+
+
+admin.site.register(User, UserAdmin)
+admin.site.register(Subscribe, SubscriberAdmin)
