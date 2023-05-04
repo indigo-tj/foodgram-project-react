@@ -14,7 +14,7 @@ class User(AbstractUser):
         return self.username
 
 
-class Subscribe(models.Model):
+class Subscription(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -37,6 +37,6 @@ class Subscribe(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=['user', 'author'],
-                name='unique_subscribe'
+                name='unique_subscriber'
             )
         ]

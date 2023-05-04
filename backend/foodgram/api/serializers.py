@@ -1,12 +1,11 @@
-from django.contrib.auth.password_validation import validate_password
-from django.core import exceptions
 from django.db import transaction
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_base64.fields import Base64ImageField
+from rest_framework import serializers
+
 from recipes.models import (Favorite, IngredientInRecipe, Ingredients, Recipe,
                             ShoppingCart, Tags)
-from rest_framework import serializers
-from users.models import Subscribe, User
+from users.models import Subscription, User
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -37,11 +36,11 @@ class UserReadSerializer(UserSerializer):
                   'is_subscribed')
 
     def get_is_subscribed(self, obj):
-        if (self.context.get('request')
-           and not self.context['request'].user.is_anonymous):
-            return Subscribe.objects.filter(user=self.context['request'].user,
-                                            author=obj).exists()
-        return False
+        if self.context['request'].user.is_anonymous:
+            return False
+        return Subscription.objects.filter(
+            user=self.context['request'].user, author=obj
+            ).exists()
 
 
 class UserCreateSerializer(UserCreateSerializer):
@@ -57,36 +56,6 @@ class UserCreateSerializer(UserCreateSerializer):
             'last_name': {'required': True, 'allow_blank': False},
             'email': {'required': True, 'allow_blank': False},
         }
-
-
-class SetPasswordSerializer(serializers.Serializer):
-    """Изменение пароля пользователя.
-    """
-    current_password = serializers.CharField()
-    new_password = serializers.CharField()
-
-    def validate(self, obj):
-        try:
-            validate_password(obj['new_password'])
-        except exceptions.ValidationError as e:
-            raise serializers.ValidationError(
-                {'new_password': list(e.messages)}
-            )
-        return super().validate(obj)
-
-    def update(self, instance, validated_data):
-        if not instance.check_password(validated_data['current_password']):
-            raise serializers.ValidationError(
-                {'current_password': 'Неверный пароль.'}
-            )
-        if (validated_data['current_password']
-           == validated_data['new_password']):
-            raise serializers.ValidationError(
-                {'new_password': 'Новый пароль должен отличаться.'}
-            )
-        instance.set_password(validated_data['new_password'])
-        instance.save()
-        return validated_data
 
 
 class RecipeIngredientSerializer(serializers.ModelSerializer):
@@ -119,7 +88,8 @@ class RecipeReadSerializer(serializers.ModelSerializer):
     author = UserReadSerializer(read_only=True)
     tags = TagsSerializer(many=True, read_only=True)
     ingredients = RecipeIngredientSerializer(
-        many=True, read_only=True, source='recipes')
+        many=True, read_only=True, source='recipes'
+        )
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
     image = Base64ImageField()
@@ -185,7 +155,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             )
         return obj
 
-    @transaction.atomic
     def ingredients_and_tags_set(self, recipe, tags, ingredients):
         recipe.tags.set(tags)
         IngredientInRecipe.objects.bulk_create(
@@ -257,11 +226,11 @@ class SubscriptionsSerializer(serializers.ModelSerializer):
                   'recipes', 'recipes_count')
 
     def get_is_subscribed(self, obj):
-        try:
-            return Subscribe.objects.filter(user=self.context['request'].user,
-                                            author=obj).exists()
-        except Exception:
+        if self.context['request'].user.is_anonymous:
             return False
+        return Subscription.objects.filter(
+            user=self.context['request'].user, author=obj
+            ).exists()
 
     def get_recipes(self, obj):
         request = self.context.get('request')
@@ -290,15 +259,24 @@ class SubscribeAuthorSerializer(serializers.ModelSerializer):
                   'last_name', 'is_subscribed',)
 
     def validate(self, obj):
-        if (self.context['request'].user == obj):
-            raise serializers.ValidationError({'errors': 'Ошибка подписки.'})
+        author = self.instance
+        user = self.context['request'].user
+        if user == obj:
+            raise serializers.ValidationError(
+                {'errors': 'Нельзя подписываться на самого себя.'}
+                )
+        if Subscription.objects.filter(author=author, user=user).exists():
+            raise serializers.ValidationError(
+                    {'errors': 'Вы уже подписаны на этого пользователя.'}
+                )
         return obj
 
     def get_is_subscribed(self, obj):
         return (
             self.context.get('request').user.is_authenticated
-            and Subscribe.objects.filter(user=self.context['request'].user,
-                                         author=obj).exists()
+            and Subscription.objects.filter(
+                user=self.context['request'].user, author=obj
+            ).exists()
         )
 
     def get_recipes_count(self, obj):

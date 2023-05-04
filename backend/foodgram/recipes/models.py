@@ -1,5 +1,6 @@
 from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
+
 from users.models import User
 
 
@@ -75,7 +76,7 @@ class Recipe(models.Model):
         upload_to='recipes/',
         blank=True
     )
-    cooking_time = models.IntegerField(
+    cooking_time = models.PositiveSmallIntegerField(
         'Время приготовления, в мин',
         validators=[MinValueValidator(1)]
     )
@@ -144,13 +145,13 @@ class Favorite(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='favorite_user',
+        related_name='favorites',
         verbose_name='Добавил в избранное'
     )
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name='favorite_recipe',
+        related_name='in_favorites',
         verbose_name='Избранный рецепт'
     )
 

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import User, Subscribe
+from .models import Subscription, User
 
 
 class UserAdmin(admin.ModelAdmin):
@@ -19,4 +19,4 @@ class SubscriberAdmin(admin.ModelAdmin):
 
 
 admin.site.register(User, UserAdmin)
-admin.site.register(Subscribe, SubscriberAdmin)
+admin.site.register(Subscription, SubscriberAdmin)

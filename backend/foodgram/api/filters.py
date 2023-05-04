@@ -1,8 +1,11 @@
 from django_filters.rest_framework import FilterSet, filters
+
 from recipes.models import Recipe, Tags
 
 
 class RecipeFilter(FilterSet):
+    """Фильтр для рецептов в избранном и корзине.
+    """
     tags = filters.ModelMultipleChoiceFilter(field_name='tags__slug',
                                              to_field_name='slug',
                                              queryset=Tags.objects.all())
