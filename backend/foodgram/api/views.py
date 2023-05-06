@@ -161,8 +161,8 @@ class UserViewSet(mixins.CreateModelMixin,
             permission_classes=(IsAuthenticated,))
     def set_password(self, request):
         serializer = SetPasswordSerializer(request.user, data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
+        # if serializer.is_valid(raise_exception=True):
+        serializer.save()
         return Response({'detail': 'Пароль успешно изменен!'},
                         status=status.HTTP_204_NO_CONTENT)
 
