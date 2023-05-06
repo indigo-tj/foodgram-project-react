@@ -39,8 +39,8 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             sudo docker-compose stop
-            sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/foodgram_frontend
-            sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/foodgram_backend
+            sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/foodgram-frontend
+            sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/foodgram-backend
             rm .env
             touch .env
             echo DEBUG=${{ secrets.DEBUG }} >> .env
