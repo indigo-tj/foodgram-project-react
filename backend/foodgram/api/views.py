@@ -2,9 +2,11 @@ from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+from djoser.views import UserViewSet as DjoserUserViewSet
 from recipes.models import (Favorite, IngredientInRecipe, Ingredients, Recipe,
                             ShoppingCart, Tags)
-from rest_framework import filters, mixins, status, viewsets
+from rest_framework import filters, mixins, status
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -22,7 +24,7 @@ from .serializers import (IngredientSerializer, RecipeCreateSerializer,
 
 class IngredientsViewSet(mixins.ListModelMixin,
                          mixins.RetrieveModelMixin,
-                         viewsets.GenericViewSet):
+                         GenericViewSet):
     """Вьюсет для вывода списка ингридиентов.
     """
     queryset = Ingredients.objects.all()
@@ -35,7 +37,7 @@ class IngredientsViewSet(mixins.ListModelMixin,
 
 class TagViewSet(mixins.ListModelMixin,
                  mixins.RetrieveModelMixin,
-                 viewsets.GenericViewSet):
+                 GenericViewSet):
     """Вывод тегов.
     """
     permission_classes = (AllowAny, )
@@ -44,7 +46,7 @@ class TagViewSet(mixins.ListModelMixin,
     pagination_class = None
 
 
-class RecipeViewSet(viewsets.ModelViewSet):
+class RecipeViewSet(ModelViewSet):
     """Для вывода рецептов.
     """
     queryset = Recipe.objects.all()
@@ -131,10 +133,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return file
 
 
-class UserViewSet(mixins.CreateModelMixin,
+class UserViewSet(DjoserUserViewSet,
+                  mixins.CreateModelMixin,
                   mixins.ListModelMixin,
-                  mixins.RetrieveModelMixin,
-                  viewsets.GenericViewSet):
+                  mixins.RetrieveModelMixin):
     """Работает с пользователями.
     """
     queryset = User.objects.all()
