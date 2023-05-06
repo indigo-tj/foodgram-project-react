@@ -18,8 +18,7 @@ from .permissions import IsAuthorOrReadOnly
 from .serializers import (IngredientSerializer, RecipeCreateSerializer,
                           RecipeReadSerializer, RecipeSerializer,
                           SubscribeAuthorSerializer, SubscriptionsSerializer,
-                          TagsSerializer, UserCreateSerializer,
-                          UserReadSerializer)
+                          TagsSerializer, UserReadSerializer)
 
 
 class IngredientsViewSet(mixins.ListModelMixin,
@@ -138,12 +137,13 @@ class UserViewSet(DjoserUserViewSet):
     """
     queryset = User.objects.all()
     pagination_class = CustomPaginator
+    add_serializer = UserReadSerializer
     permission_classes = (AllowAny,)
 
-    def get_serializer_class(self):
-        if self.action in ('list', 'retrieve'):
-            return UserReadSerializer
-        return UserCreateSerializer
+    # def get_serializer_class(self):
+    #     if self.action in ('list', 'retrieve'):
+    #         return UserReadSerializer
+    #     return UserCreateSerializer
 
     @action(detail=False, methods=['get'],
             pagination_class=None,
