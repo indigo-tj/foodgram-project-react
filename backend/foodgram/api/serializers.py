@@ -35,11 +35,20 @@ class UserReadSerializer(UserSerializer):
                   'is_subscribed')
 
     def get_is_subscribed(self, obj):
-        if self.context.get('request').user.is_anonymous:
-            return False
-        return Subscription.objects.filter(
-            user=self.context['request'].user, author=obj
-            ).exists()
+        if (self.context.get('request')
+           and not self.context['request'].user.is_anonymous):
+            return Subscription.objects.filter(
+                user=self.context['request'].user,
+                author=obj
+                ).exists()
+        return False
+
+    # def get_is_subscribed(self, obj):
+    #     if self.context.get('request').user.is_anonymous:
+    #         return False
+    #     return Subscription.objects.filter(
+    #         user=self.context['request'].user, author=obj
+    #         ).exists()
 
 
 class UserCreateSerializer(UserCreateSerializer):
