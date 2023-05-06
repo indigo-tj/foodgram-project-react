@@ -68,10 +68,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return self.add_to(Favorite,
                                request.user,
                                pk=kwargs['pk'])
-        else:
-            return self.delete_from(Favorite,
-                                    request.user,
-                                    pk=kwargs['pk'])
+        return self.delete_from(Favorite,
+                                request.user,
+                                pk=kwargs['pk'])
 
     @action(detail=True, methods=['post', 'delete'],
             permission_classes=(IsAuthenticated,),
@@ -83,10 +82,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return self.add_to(ShoppingCart,
                                request.user,
                                pk=kwargs['pk'])
-        else:
-            return self.delete_from(ShoppingCart,
-                                    request.user,
-                                    pk=kwargs['pk'])
+        return self.delete_from(ShoppingCart,
+                                request.user,
+                                pk=kwargs['pk'])
 
     def add_to(self, model, user, pk):
         """Добавление в избранное/корзину.
@@ -190,3 +188,4 @@ class UserViewSet(mixins.CreateModelMixin,
                               author=author).delete()
             return Response({'detail': 'Успешно отписались'},
                             status=status.HTTP_204_NO_CONTENT)
+        return None
