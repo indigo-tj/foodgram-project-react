@@ -2,11 +2,10 @@ from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from djoser.views import UserViewSet as DjoserUserViewSet
+from djoser.serializers import SetPasswordSerializer
 from recipes.models import (Favorite, IngredientInRecipe, Ingredients, Recipe,
                             ShoppingCart, Tags)
-from rest_framework import filters, mixins, status
-from rest_framework.viewsets import GenericViewSet, ModelViewSet
+from rest_framework import filters, mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -18,12 +17,13 @@ from .permissions import IsAuthorOrReadOnly
 from .serializers import (IngredientSerializer, RecipeCreateSerializer,
                           RecipeReadSerializer, RecipeSerializer,
                           SubscribeAuthorSerializer, SubscriptionsSerializer,
-                          TagsSerializer, UserReadSerializer)
+                          TagsSerializer, UserCreateSerializer,
+                          UserReadSerializer)
 
 
 class IngredientsViewSet(mixins.ListModelMixin,
                          mixins.RetrieveModelMixin,
-                         GenericViewSet):
+                         viewsets.GenericViewSet):
     """Вьюсет для вывода списка ингридиентов.
     """
     queryset = Ingredients.objects.all()
@@ -36,7 +36,7 @@ class IngredientsViewSet(mixins.ListModelMixin,
 
 class TagViewSet(mixins.ListModelMixin,
                  mixins.RetrieveModelMixin,
-                 GenericViewSet):
+                 viewsets.GenericViewSet):
     """Вывод тегов.
     """
     permission_classes = (AllowAny, )
@@ -45,7 +45,7 @@ class TagViewSet(mixins.ListModelMixin,
     pagination_class = None
 
 
-class RecipeViewSet(ModelViewSet):
+class RecipeViewSet(viewsets.ModelViewSet):
     """Для вывода рецептов.
     """
     queryset = Recipe.objects.all()
@@ -132,18 +132,20 @@ class RecipeViewSet(ModelViewSet):
         return file
 
 
-class UserViewSet(DjoserUserViewSet):
+class UserViewSet(mixins.CreateModelMixin,
+                  mixins.ListModelMixin,
+                  mixins.RetrieveModelMixin,
+                  viewsets.GenericViewSet):
     """Работает с пользователями.
     """
     queryset = User.objects.all()
     pagination_class = CustomPaginator
-    add_serializer = UserReadSerializer
     permission_classes = (AllowAny,)
 
-    # def get_serializer_class(self):
-    #     if self.action in ('list', 'retrieve'):
-    #         return UserReadSerializer
-    #     return UserCreateSerializer
+    def get_serializer_class(self):
+        if self.action in ('list', 'retrieve'):
+            return UserReadSerializer
+        return UserCreateSerializer
 
     @action(detail=False, methods=['get'],
             pagination_class=None,
@@ -154,6 +156,15 @@ class UserViewSet(DjoserUserViewSet):
         serializer = UserReadSerializer(request.user)
         return Response(serializer.data,
                         status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['post'],
+            permission_classes=(IsAuthenticated,))
+    def set_password(self, request):
+        serializer = SetPasswordSerializer(request.user, data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+        return Response({'detail': 'Пароль успешно изменен!'},
+                        status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, methods=['get'],
             permission_classes=(IsAuthenticated,),
