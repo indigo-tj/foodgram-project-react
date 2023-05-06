@@ -8,11 +8,11 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-SECRET_KEY = 'django-insecure-de315*mgc&l(*=vvj$w3(=%9!7&08grs2t*-w83+-zw6iru@%u'
+SECRET_KEY = {'SECRET_KEY': os.getenv('SECRET_KEY',)}
 
-DEBUG = False
+DEBUG = {'DEBUG': os.getenv('DEBUG', default='False')}
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = {'ALLOWED_HOSTS': os.getenv('ALLOWED_HOSTS', default='[*]')}
 
 
 INSTALLED_APPS = [
@@ -71,13 +71,13 @@ CSRF_TRUSTED_ORIGINS = [
 
 DATABASES = {
     'default': {
-        'ENGINE': os.getenv('ENGINE',
+        'ENGINE': os.getenv('DB_ENGINE',
                             default='django.db.backends.postgresql'),
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('POSTGRES_USER'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT')
+        'NAME': os.getenv('DB_NAME', default='postgres'),
+        'USER': os.getenv('POSTGRES_USER', default='postgres'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='postgres'),
+        'HOST': os.getenv('DB_HOST', default='db'),
+        'PORT': os.getenv('DB_PORT', default='5432')
     }
 }
 

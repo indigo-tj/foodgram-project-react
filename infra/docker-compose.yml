@@ -10,9 +10,9 @@ services:
 
   backend:
       image: indigotj/foodgram-backend:latest
-      build:
-        context: ../backend
-        dockerfile: Dockerfile
+      # build:
+      #   context: ../backend
+      #   dockerfile: Dockerfile
       restart: always
       volumes:
         - static_value:/app/static/
