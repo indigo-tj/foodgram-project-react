@@ -37,9 +37,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            # sudo docker pull mihalev/foodgram-project:latest
-            # sudo docker-compose stop
-            # sudo docker-compose rm -f backend
             rm .env
             touch .env
             echo DEBUG=${{ secrets.DEBUG }} >> .env
