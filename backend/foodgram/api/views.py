@@ -133,10 +133,10 @@ class RecipeViewSet(ModelViewSet):
         return file
 
 
-class UserViewSet(DjoserUserViewSet,
-                  mixins.CreateModelMixin,
+class UserViewSet(mixins.CreateModelMixin,
                   mixins.ListModelMixin,
-                  mixins.RetrieveModelMixin):
+                  mixins.RetrieveModelMixin,
+                  GenericViewSet):
     """Работает с пользователями.
     """
     queryset = User.objects.all()
