@@ -39,6 +39,7 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             sudo docker-compose stop
+            sudo docker ps -a | grep Exit | cut -d ' ' -f 1 | xargs sudo docker rm
             sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/foodgram-frontend
             sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/foodgram-backend
             rm .env
