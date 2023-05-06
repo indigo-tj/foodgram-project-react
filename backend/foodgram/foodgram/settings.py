@@ -18,6 +18,7 @@ ALLOWED_HOSTS = [
     'backend',
     'db',
     '158.160.44.157',
+    'foodgramm.sytes.net',
 ]
 
 
