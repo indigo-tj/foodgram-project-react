@@ -72,7 +72,11 @@ CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1',
     'http://localhost',
     'https://127.0.0.1',
-    'https://localhost'
+    'https://localhost',
+    'http://158.160.44.157',
+    'https://158.160.44.157',
+    'http://foodgramm.sytes.net/',
+    'https://foodgramm.sytes.net/',
 ]
 
 DATABASES = {
