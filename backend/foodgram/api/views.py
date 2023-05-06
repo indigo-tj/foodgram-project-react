@@ -2,13 +2,12 @@ from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+from recipes.models import (Favorite, IngredientInRecipe, Ingredients, Recipe,
+                            ShoppingCart, Tags)
 from rest_framework import filters, mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-
-from recipes.models import (Favorite, IngredientInRecipe, Ingredients, Recipe,
-                            ShoppingCart, Tags)
 from users.models import Subscription, User
 
 from .filters import RecipeFilter
@@ -16,9 +15,9 @@ from .pagination import CustomPaginator
 from .permissions import IsAuthorOrReadOnly
 from .serializers import (IngredientSerializer, RecipeCreateSerializer,
                           RecipeReadSerializer, RecipeSerializer,
-                          SubscribeAuthorSerializer,
-                          SubscriptionsSerializer, TagsSerializer,
-                          UserCreateSerializer, UserReadSerializer)
+                          SubscribeAuthorSerializer, SubscriptionsSerializer,
+                          TagsSerializer, UserCreateSerializer,
+                          UserReadSerializer)
 
 
 class IngredientsViewSet(mixins.ListModelMixin,
