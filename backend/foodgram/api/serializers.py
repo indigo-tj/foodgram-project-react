@@ -1,4 +1,8 @@
+from django.contrib.auth.password_validation import validate_password
+from django.core import exceptions as django_exceptions
 from django.db import transaction
+from djoser.serializers import \
+    SetPasswordSerializer as DjoserPasswordSerializer
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_base64.fields import Base64ImageField
 from recipes.models import (Favorite, IngredientInRecipe, Ingredients, Recipe,
@@ -43,13 +47,6 @@ class UserReadSerializer(UserSerializer):
                 ).exists()
         return False
 
-    # def get_is_subscribed(self, obj):
-    #     if self.context.get('request').user.is_anonymous:
-    #         return False
-    #     return Subscription.objects.filter(
-    #         user=self.context['request'].user, author=obj
-    #         ).exists()
-
 
 class UserCreateSerializer(UserCreateSerializer):
     """Создание нового пользователя.
@@ -64,6 +61,36 @@ class UserCreateSerializer(UserCreateSerializer):
             'last_name': {'required': True, 'allow_blank': False},
             'email': {'required': True, 'allow_blank': False},
         }
+
+
+class SetPasswordSerializer(DjoserPasswordSerializer):
+    """Изменение пароля пользователя.
+    """
+    current_password = serializers.CharField()
+    new_password = serializers.CharField()
+
+    def validate(self, obj):
+        try:
+            validate_password(obj['new_password'])
+        except django_exceptions.ValidationError as e:
+            raise serializers.ValidationError(
+                {'new_password': list(e.messages)}
+            )
+        return super().validate(obj)
+
+    def update(self, instance, validated_data):
+        if not instance.check_password(validated_data['current_password']):
+            raise serializers.ValidationError(
+                {'current_password': 'Неправильный пароль.'}
+            )
+        if (validated_data['current_password']
+           == validated_data['new_password']):
+            raise serializers.ValidationError(
+                {'new_password': 'Новый пароль должен отличаться от текущего.'}
+            )
+        instance.set_password(validated_data['new_password'])
+        instance.save()
+        return validated_data
 
 
 class RecipeIngredientSerializer(serializers.ModelSerializer):

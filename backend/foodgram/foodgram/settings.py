@@ -19,6 +19,7 @@ ALLOWED_HOSTS = [
     'db',
     '158.160.44.157',
     'foodgramm.sytes.net',
+    'host.docker.internal'
 ]
 
 
@@ -78,6 +79,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://158.160.44.157',
     'http://foodgramm.sytes.net',
     'https://foodgramm.sytes.net'
+    'http://host.docker.internal'
 ]
 
 DATABASES = {
@@ -122,15 +124,12 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': [
         'api.pagination.CustomPaginator',
     ],
-    'PAGE_SIZE': 9,
+    'PAGE_SIZE': 6,
     'SEARCH_PARAM': 'name',
 }
 
 DJOSER = {
     'LOGIN_FIELD': 'email',
-    'SET_PASSWORD_RETYPE': True,
-    'LOGOUT_ON_PASSWORD_CHANGE': True,
-    'PASSWORD_RESET_CONFIRM_URL': '#/users/set_password/{uid}/{token}/'
 }
 
 LANGUAGE_CODE = 'ru'

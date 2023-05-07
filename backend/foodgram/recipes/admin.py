@@ -21,7 +21,7 @@ class TagAdmin(admin.ModelAdmin):
 
 class IngredientInline(admin.TabularInline):
     model = IngredientInRecipe
-    extra = 3
+    extra = 5
     min_num = 1
 
 
@@ -40,6 +40,10 @@ class RecipeAdmin(admin.ModelAdmin):
     formfield_overrides = {
         models.TextField: {'widget': CKEditorWidget},
     }
+
+    @admin.display(description='В избранном')
+    def in_favorites(self, obj):
+        return obj.favorite_recipe.count()
 
 
 class RecipeIngredientAdmin(admin.ModelAdmin):
