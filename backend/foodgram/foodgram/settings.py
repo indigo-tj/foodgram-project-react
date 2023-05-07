@@ -130,6 +130,7 @@ DJOSER = {
     'LOGIN_FIELD': 'email',
     'SET_PASSWORD_RETYPE': True,
     'LOGOUT_ON_PASSWORD_CHANGE': True,
+    'PASSWORD_RESET_CONFIRM_URL': '#/users/set_password/{uid}/{token}/'
 }
 
 LANGUAGE_CODE = 'ru'
