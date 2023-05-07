@@ -1,6 +1,5 @@
 # Сайт Foodgram "Продуктовый помощник"
 
-![Foodgram project](https://github.com/nickolaeo/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg)
 [![CI for Foodgram](https://github.com/indigo-tj/foodgram-project-react/actions/workflows/foodgram_CI.yml/badge.svg)](https://github.com/indigo-tj/foodgram-project-react/actions/workflows/foodgram_CI.yml)
 
 ## _Онлайн-сервис для публикации рецептов_
@@ -82,7 +81,7 @@ password: adminya
 # Документация
 
 Для просмотра документации к API перейдите по адресу:
-- http://foodgramm.sytes.net/api/redoc
+- http://foodgramm.sytes.net/api/docs/
 
 # Локальная установка
 
