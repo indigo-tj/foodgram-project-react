@@ -2,7 +2,7 @@ from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from djoser.serializers import SetPasswordSerializer
+# from djoser.serializers import SetPasswordSerializer
 from djoser.views import UserViewSet
 from recipes.models import (Favorite, IngredientInRecipe, Ingredients, Recipe,
                             ShoppingCart, Tags)
@@ -133,7 +133,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return file
 
 
-class UserSibscribeViewSet(UserViewSet):
+class CustomUserViewSet(UserViewSet):
     """Работает с пользователями.
     """
     queryset = User.objects.all()
@@ -155,14 +155,14 @@ class UserSibscribeViewSet(UserViewSet):
         return Response(serializer.data,
                         status=status.HTTP_200_OK)
 
-    @action(detail=False, methods=['post'],
-            permission_classes=(IsAuthenticated,))
-    def set_password(self, request):
-        serializer = SetPasswordSerializer(request.user, data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-        return Response({'detail': 'Пароль успешно изменен!'},
-                        status=status.HTTP_204_NO_CONTENT)
+    # @action(detail=False, methods=['post'],
+    #         permission_classes=(IsAuthenticated,))
+    # def set_password(self, request):
+    #     serializer = SetPasswordSerializer(request.user, data=request.data)
+    #     if serializer.is_valid(raise_exception=True):
+    #         serializer.save()
+    #     return Response({'detail': 'Пароль успешно изменен!'},
+    #                     status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, methods=['get'],
             permission_classes=(IsAuthenticated,),
