@@ -2,6 +2,7 @@ from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+from djoser.views import UserViewSet
 from djoser.serializers import SetPasswordSerializer
 from recipes.models import (Favorite, IngredientInRecipe, Ingredients, Recipe,
                             ShoppingCart, Tags)
@@ -132,10 +133,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return file
 
 
-class UserViewSet(mixins.CreateModelMixin,
-                  mixins.ListModelMixin,
-                  mixins.RetrieveModelMixin,
-                  viewsets.GenericViewSet):
+class UserSibscribeViewSet(UserViewSet):
     """Работает с пользователями.
     """
     queryset = User.objects.all()
@@ -161,8 +159,8 @@ class UserViewSet(mixins.CreateModelMixin,
             permission_classes=(IsAuthenticated,))
     def set_password(self, request):
         serializer = SetPasswordSerializer(request.user, data=request.data)
-        # if serializer.is_valid(raise_exception=True):
-        serializer.save()
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
         return Response({'detail': 'Пароль успешно изменен!'},
                         status=status.HTTP_204_NO_CONTENT)
 
