@@ -44,7 +44,7 @@ class UserReadSerializer(UserSerializer):
             return Subscription.objects.filter(
                 user=self.context['request'].user,
                 author=obj
-                ).exists()
+            ).exists()
         return False
 
 
@@ -124,7 +124,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
     tags = TagsSerializer(many=True, read_only=True)
     ingredients = RecipeIngredientSerializer(
         many=True, read_only=True, source='recipes'
-        )
+    )
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
     image = Base64ImageField()
@@ -265,7 +265,7 @@ class SubscriptionsSerializer(serializers.ModelSerializer):
             return False
         return Subscription.objects.filter(
             user=self.context['request'].user, author=obj
-            ).exists()
+        ).exists()
 
     def get_recipes(self, obj):
         request = self.context.get('request')
@@ -299,11 +299,11 @@ class SubscribeAuthorSerializer(serializers.ModelSerializer):
         if user == obj:
             raise serializers.ValidationError(
                 {'errors': 'Нельзя подписываться на самого себя.'}
-                )
+            )
         if Subscription.objects.filter(author=author, user=user).exists():
             raise serializers.ValidationError(
-                    {'errors': 'Вы уже подписаны на этого пользователя.'}
-                )
+                {'errors': 'Вы уже подписаны на этого пользователя.'}
+            )
         return obj
 
     def get_is_subscribed(self, obj):
