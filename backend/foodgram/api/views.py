@@ -187,7 +187,7 @@ class CustomUserViewSet(UserViewSet):
                 author,
                 data=request.data,
                 context={"request": request}
-                )
+            )
             serializer.is_valid(raise_exception=True)
             Subscription.objects.create(user=request.user, author=author)
             return Response(serializer.data,
