@@ -250,7 +250,7 @@ class SubscriptionsSerializer(serializers.ModelSerializer):
     """Список авторов на которых подписан пользователь.
     """
     is_subscribed = serializers.SerializerMethodField()
-    recipes = RecipeSerializer(read_only=True)
+    recipes = RecipeSerializer(many=True)
     recipes_count = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
