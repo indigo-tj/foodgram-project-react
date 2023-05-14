@@ -3,7 +3,16 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+.idea
+.DS_Store
+.AppleDouble
+.LSOverride
+
+*.sublime-project
+*.sublime-workspace
+
 .vscode/
+*.code-workspace
 
 # C extensions
 *.so
@@ -62,8 +71,6 @@ coverage.xml
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
-static/
-media/
 
 # Flask stuff:
 instance/
@@ -73,7 +80,7 @@ instance/
 .scrapy
 
 # Sphinx documentation
-
+docs/_build/
 
 # PyBuilder
 target/
@@ -132,6 +139,3 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-
-# .idea
-.idea

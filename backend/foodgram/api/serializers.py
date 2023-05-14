@@ -251,7 +251,7 @@ class SubscriptionsSerializer(serializers.ModelSerializer):
     """
     is_subscribed = serializers.SerializerMethodField()
     recipes = RecipeSerializer(many=True)
-    recipes_count = serializers.SerializerMethodField()
+    recipes_count = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
@@ -260,12 +260,12 @@ class SubscriptionsSerializer(serializers.ModelSerializer):
                   'last_name', 'is_subscribed',
                   'recipes', 'recipes_count')
 
-    def get_is_subscribed(self, obj):
-        if self.context['request'].user.is_anonymous:
-            return False
-        return Subscription.objects.filter(
-            user=self.context['request'].user, author=obj
-        ).exists()
+    # def get_is_subscribed(self, obj):
+    #     if self.context['request'].user.is_anonymous:
+    #         return False
+    #     return Subscription.objects.filter(
+    #         user=self.context['request'].user, author=obj
+    #     ).exists()
 
     def get_recipes_count(self, obj):
         return obj.recipes.count()
@@ -273,7 +273,7 @@ class SubscriptionsSerializer(serializers.ModelSerializer):
     def get_recipes(self, obj):
         request = self.context.get['request']
         limit = request.GET.get('recipes_limit')
-        recipes = obj.recipes.all()
+        recipes = obj.page.all()
         if limit:
             recipes = recipes[:int(limit)]
         serializer = RecipeSerializer(recipes, many=True, read_only=True)
