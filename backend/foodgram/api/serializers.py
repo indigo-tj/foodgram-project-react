@@ -260,12 +260,19 @@ class SubscriptionsSerializer(serializers.ModelSerializer):
                   'last_name', 'is_subscribed',
                   'recipes', 'recipes_count')
 
-    # def get_is_subscribed(self, obj):
-    #     if self.context['request'].user.is_anonymous:
-    #         return False
-    #     return Subscription.objects.filter(
-    #         user=self.context['request'].user, author=obj
-    #     ).exists()
+    def get_is_subscribed(self, obj):
+        try:
+            return Subscription.objects.filter(
+                user=self.context['request'].user,
+                author=obj
+            ).exists()
+        except Exception:
+            return False
+        # if self.context['request'].user.is_anonymous:
+        #     return False
+        # return Subscription.objects.filter(
+        #     user=self.context['request'].user, author=obj
+        # ).exists()
 
     def get_recipes_count(self, obj):
         return obj.recipes.count()
