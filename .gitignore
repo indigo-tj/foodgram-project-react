@@ -121,6 +121,7 @@ ENV/
 env.bak/
 venv.bak/
 infra-dev/
+*media/
 
 # Spyder project settings
 .spyderproject
