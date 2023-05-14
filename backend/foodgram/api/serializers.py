@@ -278,8 +278,8 @@ class SubscriptionsSerializer(serializers.ModelSerializer):
         return obj.recipes.count()
 
     def get_recipes(self, obj):
-        request = self.context.get['request']
-        limit = request.GET.get('recipes_limit')
+        # request = self.context.get('request')
+        limit = self.context.GET.get('recipes_limit')
         recipes = obj.page.all()
         if limit:
             recipes = recipes[:int(limit)]
