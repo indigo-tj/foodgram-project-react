@@ -250,7 +250,7 @@ class SubscriptionsSerializer(serializers.ModelSerializer):
     """Список авторов на которых подписан пользователь.
     """
     is_subscribed = serializers.SerializerMethodField()
-    recipes = RecipeSerializer(many=True)
+    recipes = RecipeSerializer(read_only=True)
     recipes_count = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
@@ -279,10 +279,12 @@ class SubscriptionsSerializer(serializers.ModelSerializer):
 
     def get_recipes(self, obj):
         # request = self.context.get('request')
-        limit = self.context.get('request').GET['recipes_limit']
-        recipes = obj.recipes.all()
-        if limit:
-            recipes = recipes[:int(limit)]
+        limit_recipes = self.context.get('request').GET['recipes_limit']
+        if limit_recipes is not None:
+            recipes = obj.recipes.all()[:(int(limit_recipes))]
+        else:
+            recipes = obj.recipes.all()
+
         serializer = RecipeSerializer(recipes, many=True, read_only=True)
         return serializer.data
 
